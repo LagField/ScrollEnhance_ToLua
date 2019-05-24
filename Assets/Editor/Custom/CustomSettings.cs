@@ -155,6 +155,7 @@ public static class CustomSettings
         _GT(typeof(RectTransform)),
         _GT(typeof(Debug)),
         _GT(typeof(ScrollEnhancement.ScrollEnhancement)),
+        _GT(typeof(Text)),
     };
 
     public static List<Type> dynamicList = new List<Type>()

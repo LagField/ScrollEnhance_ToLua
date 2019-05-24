@@ -3199,6 +3199,114 @@ function ScrollEnhancement_ScrollEnhancement:RefreshItemsContent() end
 function ScrollEnhancement_ScrollEnhancement:ScrollToData(dataIndex, scrollTime) end
 function ScrollEnhancement_ScrollEnhancement:UpdateItemsVisibility() end
 
+---@class UnityEngine.UI.Text : UnityEngine.UI.MaskableGraphic
+---@field cachedTextGenerator NotExportType
+---@field cachedTextGeneratorForLayout NotExportType
+---@field mainTexture UnityEngine.Texture
+---@field font NotExportType
+---@field text string
+---@field supportRichText boolean
+---@field resizeTextForBestFit boolean
+---@field resizeTextMinSize number
+---@field resizeTextMaxSize number
+---@field alignment NotExportEnum
+---@field alignByGeometry boolean
+---@field fontSize number
+---@field horizontalOverflow NotExportEnum
+---@field verticalOverflow NotExportEnum
+---@field lineSpacing number
+---@field fontStyle NotExportEnum
+---@field pixelsPerUnit number
+---@field minWidth number
+---@field preferredWidth number
+---@field flexibleWidth number
+---@field minHeight number
+---@field preferredHeight number
+---@field flexibleHeight number
+---@field layoutPriority number
+local UnityEngine_UI_Text = {}
+---@param anchor NotExportEnum
+---@return UnityEngine.Vector2
+function UnityEngine_UI_Text.GetTextAnchorPivot(anchor) end
+function UnityEngine_UI_Text:FontTextureChanged() end
+---@param extents UnityEngine.Vector2
+---@return NotExportType
+function UnityEngine_UI_Text:GetGenerationSettings(extents) end
+function UnityEngine_UI_Text:CalculateLayoutInputHorizontal() end
+function UnityEngine_UI_Text:CalculateLayoutInputVertical() end
+
+---@class UnityEngine.UI.MaskableGraphic : UnityEngine.UI.Graphic
+---@field onCullStateChanged NotExportType
+---@field maskable boolean
+local UnityEngine_UI_MaskableGraphic = {}
+---@param baseMaterial UnityEngine.Material
+---@return UnityEngine.Material
+function UnityEngine_UI_MaskableGraphic:GetModifiedMaterial(baseMaterial) end
+---@param clipRect NotExportType
+---@param validRect boolean
+function UnityEngine_UI_MaskableGraphic:Cull(clipRect, validRect) end
+---@param clipRect NotExportType
+---@param validRect boolean
+function UnityEngine_UI_MaskableGraphic:SetClipRect(clipRect, validRect) end
+function UnityEngine_UI_MaskableGraphic:RecalculateClipping() end
+function UnityEngine_UI_MaskableGraphic:RecalculateMasking() end
+
+---@class UnityEngine.UI.Graphic : UnityEngine.EventSystems.UIBehaviour
+---@field defaultGraphicMaterial UnityEngine.Material
+---@field color UnityEngine.Color
+---@field raycastTarget boolean
+---@field depth number
+---@field rectTransform UnityEngine.RectTransform
+---@field canvas NotExportType
+---@field canvasRenderer NotExportType
+---@field defaultMaterial UnityEngine.Material
+---@field material UnityEngine.Material
+---@field materialForRendering UnityEngine.Material
+---@field mainTexture UnityEngine.Texture
+local UnityEngine_UI_Graphic = {}
+function UnityEngine_UI_Graphic:SetAllDirty() end
+function UnityEngine_UI_Graphic:SetLayoutDirty() end
+function UnityEngine_UI_Graphic:SetVerticesDirty() end
+function UnityEngine_UI_Graphic:SetMaterialDirty() end
+function UnityEngine_UI_Graphic:OnCullingChanged() end
+---@param update NotExportEnum
+function UnityEngine_UI_Graphic:Rebuild(update) end
+function UnityEngine_UI_Graphic:LayoutComplete() end
+function UnityEngine_UI_Graphic:GraphicUpdateComplete() end
+function UnityEngine_UI_Graphic:SetNativeSize() end
+---@param sp UnityEngine.Vector2
+---@param eventCamera UnityEngine.Camera
+---@return boolean
+function UnityEngine_UI_Graphic:Raycast(sp, eventCamera) end
+---@param point UnityEngine.Vector2
+---@return UnityEngine.Vector2
+function UnityEngine_UI_Graphic:PixelAdjustPoint(point) end
+---@return NotExportType
+function UnityEngine_UI_Graphic:GetPixelAdjustedRect() end
+---@overload fun(targetColor : UnityEngine.Color, duration : number, ignoreTimeScale : boolean, useAlpha : boolean)
+---@param targetColor UnityEngine.Color
+---@param duration number
+---@param ignoreTimeScale boolean
+---@param useAlpha boolean
+---@param useRGB boolean
+function UnityEngine_UI_Graphic:CrossFadeColor(targetColor, duration, ignoreTimeScale, useAlpha, useRGB) end
+---@param alpha number
+---@param duration number
+---@param ignoreTimeScale boolean
+function UnityEngine_UI_Graphic:CrossFadeAlpha(alpha, duration, ignoreTimeScale) end
+---@param action NotExportType
+function UnityEngine_UI_Graphic:RegisterDirtyLayoutCallback(action) end
+---@param action NotExportType
+function UnityEngine_UI_Graphic:UnregisterDirtyLayoutCallback(action) end
+---@param action NotExportType
+function UnityEngine_UI_Graphic:RegisterDirtyVerticesCallback(action) end
+---@param action NotExportType
+function UnityEngine_UI_Graphic:UnregisterDirtyVerticesCallback(action) end
+---@param action NotExportType
+function UnityEngine_UI_Graphic:RegisterDirtyMaterialCallback(action) end
+---@param action NotExportType
+function UnityEngine_UI_Graphic:UnregisterDirtyMaterialCallback(action) end
+
 ---@class LuaInterface.EventObject : System.Object
 ---@field op NotExportEnum
 ---@field func System.Delegate

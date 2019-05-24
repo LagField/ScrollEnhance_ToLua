@@ -126,6 +126,12 @@ UnityEngine_RectTransform = UnityEngine.RectTransform
 UnityEngine_Debug = UnityEngine.Debug
 ---@type ScrollEnhancement.ScrollEnhancement
 ScrollEnhancement_ScrollEnhancement = ScrollEnhancement.ScrollEnhancement
+---@type UnityEngine.UI.Text
+UnityEngine_UI_Text = UnityEngine.UI.Text
+---@type UnityEngine.UI.MaskableGraphic
+UnityEngine_UI_MaskableGraphic = UnityEngine.UI.MaskableGraphic
+---@type UnityEngine.UI.Graphic
+UnityEngine_UI_Graphic = UnityEngine.UI.Graphic
 ---@type LuaInterface.EventObject
 LuaInterface_EventObject = LuaInterface.EventObject
 ---@type LuaInterface.LuaConstructor

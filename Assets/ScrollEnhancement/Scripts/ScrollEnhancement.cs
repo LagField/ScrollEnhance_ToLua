@@ -50,7 +50,7 @@ namespace ScrollEnhancement
         [SerializeField] private Vector2 cellSize = new Vector2(100, 100);
         [SerializeField] private Vector2 spacing;
         [SerializeField] private Corner startCorner;
-        [SerializeField] private Axis startAxis = Axis.Vertical;
+        [SerializeField] private Axis startAxis;
         [SerializeField] private Alignment childAlignment;
 
         [SerializeField] private GameObject prefab;
@@ -81,6 +81,11 @@ namespace ScrollEnhancement
         {
             get
             {
+                if (startAxis == Axis.Vertical)
+                {
+                    return 0;
+                }
+
                 float currentVisibleStartHeight = ScrollRect.content.anchoredPosition.y;
                 return Mathf.FloorToInt(currentVisibleStartHeight / (padding.top + cellSize.y + spacing.y));
             }
@@ -90,8 +95,40 @@ namespace ScrollEnhancement
         {
             get
             {
-                float currentVisibleEndHeight = ScrollRect.content.anchoredPosition.y + _scrollRect.viewport.rect.height;
+                if (startAxis == Axis.Vertical)
+                {
+                    return maxRowAmount;
+                }
+                
+                float currentVisibleEndHeight = ScrollRect.content.anchoredPosition.y + ScrollRect.viewport.rect.height;
                 return Mathf.CeilToInt(currentVisibleEndHeight / (padding.top + cellSize.y + spacing.y));
+            }
+        }
+
+        int VisibleColumnStartIndex
+        {
+            get
+            {
+                if (startAxis == Axis.Horizontal)
+                {
+                    return 0;
+                }
+                
+                float currentVisibleStartWidth = -ScrollRect.content.anchoredPosition.x;
+                return Mathf.FloorToInt(currentVisibleStartWidth / (padding.left + cellSize.x + spacing.x));
+            }
+        }
+
+        int VisibleColumnEndIndex
+        {
+            get
+            {
+                if (startAxis == Axis.Horizontal)
+                {
+                    return maxColumnAmount;
+                }
+                float currentVisibleEndWidth = -ScrollRect.content.anchoredPosition.x + ScrollRect.viewport.rect.width;
+                return Mathf.CeilToInt(currentVisibleEndWidth / (padding.left + cellSize.x + spacing.x));
             }
         }
 
@@ -146,6 +183,7 @@ namespace ScrollEnhancement
 
         public void ClearAllChildItems()
         {
+            dataAmount = 0;
             int childCount = ScrollRect.content.childCount;
             for (int i = childCount - 1; i >= 0; i--)
             {
@@ -234,7 +272,7 @@ namespace ScrollEnhancement
 
             float width;
             float height;
-            if (startAxis == Axis.Vertical)
+            if (startAxis == Axis.Horizontal)
             {
                 width = ScrollRect.viewport.rect.width;
                 height = maxRowAmount * cellSize.y + (maxRowAmount - 1) * spacing.y + padding.top + padding.bottom;
@@ -256,8 +294,20 @@ namespace ScrollEnhancement
         public void UpdateItemsVisibility()
         {
             //hide items
-            int itemNeedStartDataIndex = VisibleRowStartIndex * maxColumnAmount;
-            int itemNeedEndDataIndex = VisibleRowEndIndex * maxColumnAmount;
+            int itemNeedStartDataIndex;
+            int itemNeedEndDataIndex;
+
+            if (startAxis == Axis.Horizontal)
+            {
+                itemNeedStartDataIndex = VisibleRowStartIndex * maxColumnAmount;
+                itemNeedEndDataIndex = VisibleRowEndIndex * maxColumnAmount;
+            }
+            else
+            {
+                itemNeedStartDataIndex = VisibleColumnStartIndex * maxRowAmount;
+                itemNeedEndDataIndex = VisibleColumnEndIndex * maxRowAmount;
+            }
+
             for (int i = itemList.Count - 1; i >= 0; i--)
             {
                 ScrollItem item = itemList[i];
@@ -309,7 +359,6 @@ namespace ScrollEnhancement
             }
         }
 
-
         private ScrollItem GetItemAtDataIndex(int index)
         {
             for (int i = 0; i < itemList.Count; i++)
@@ -333,6 +382,18 @@ namespace ScrollEnhancement
                 return;
             }
 
+            //横着排布则必须竖直方向滚动,竖着排布则必须横方向滚动
+            if (startAxis == Axis.Horizontal)
+            {
+                ScrollRect.horizontal = false;
+                ScrollRect.vertical = true;
+            }
+            else
+            {
+                ScrollRect.horizontal = true;
+                ScrollRect.vertical = false;
+            }
+
             RefreshItemsLayoutInEditor();
         }
 
@@ -347,6 +408,8 @@ namespace ScrollEnhancement
             {
                 return;
             }
+
+            dataAmount = itemAmount;
 
             RefreshMaxRowAndColumnAmount();
             int currentItemAmount = itemList.Count;
@@ -430,12 +493,24 @@ namespace ScrollEnhancement
 
         private Vector2 CalculateIndexItemAnchorPosition(int dataIndex)
         {
-            int verticalIndex = Mathf.FloorToInt((float) dataIndex / maxColumnAmount);
-            int horizontalIndex = dataIndex - verticalIndex * maxColumnAmount;
-            float verticalPosition = padding.top + verticalIndex * cellSize.y + spacing.y * verticalIndex;
-            verticalPosition *= -1;
-            float horizontalPosition = padding.left + horizontalIndex * cellSize.x + spacing.x * horizontalIndex;
-            return new Vector2(horizontalPosition, verticalPosition);
+            if (startAxis == Axis.Horizontal)
+            {
+                int verticalIndex = Mathf.FloorToInt((float) dataIndex / maxColumnAmount);
+                int horizontalIndex = dataIndex - verticalIndex * maxColumnAmount;
+                float verticalPosition = padding.top + verticalIndex * (cellSize.y + spacing.y);
+                verticalPosition *= -1;
+                float horizontalPosition = padding.left + horizontalIndex * (cellSize.x + spacing.x);
+                return new Vector2(horizontalPosition, verticalPosition);
+            }
+            else
+            {
+                int horizontalIndex = Mathf.FloorToInt((float) dataIndex / maxRowAmount);
+                int verticalIndex = dataIndex - horizontalIndex * maxRowAmount;
+                float horizontalPosition = padding.left + horizontalIndex * cellSize.x + spacing.x * horizontalIndex;
+                float verticalPosition = padding.top + verticalIndex * cellSize.y + spacing.y * verticalIndex;
+                verticalPosition *= -1;
+                return new Vector2(horizontalPosition, verticalPosition);
+            }
         }
 
         private List<ScrollItem> itemPoolList = new List<ScrollItem>();
@@ -457,7 +532,7 @@ namespace ScrollEnhancement
             newItem.rectTransform.localScale = Vector3.one;
             if (onCreateNewItemPrefabCallback != null)
             {
-                newItem.itemLuaClass = onCreateNewItemPrefabCallback.Invoke<Transform, LuaTable>(newItem.rectTransform);
+                newItem.itemLuaClass = onCreateNewItemPrefabCallback.Invoke<RectTransform, LuaTable>(newItem.rectTransform);
             }
 
             return newItem;
